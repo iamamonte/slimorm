@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Data.SqlClient;
 using System.Data.Common;
-using SlimOrm.Extensions;
-using SlimOrm.Attributes;
 
 namespace SlimOrm
 {
@@ -208,13 +203,14 @@ namespace SlimOrm
                 if (field.PropertyType.FullName == "System.Boolean")
                 {
                     field.SetValue(targetObject, reader[dbName].ToString().ConvertToBool());
-
+                    return;
                 }
                 if (field.PropertyType.BaseType == typeof(Enum))
                 {
                     int _value = (int)Convert.ChangeType(reader[dbName].ToString(), typeof(int));
 
                     field.SetValue(targetObject, _value);
+                    return;
                 }
                 else
                 {
@@ -257,12 +253,16 @@ namespace SlimOrm
                 fieldName = (currentAttribute.Value == "") ? property.Name.ToUnderScoreCase() : currentAttribute.Value;
                 object value = property.GetValue(providingObject);
 
-                if (property.PropertyType.Name.ToLower().Contains("nullable"))
-                    if (value == null)
-                    {
-                        command.Parameters.AddWithValue("@" + fieldName, DBNull.Value);
-                        continue;
-                    }
+                //if (property.PropertyType.Name.ToLower().Contains("nullable"))
+                //    if (value == null)
+                //    {
+                //        command.Parameters.AddWithValue("@" + fieldName, DBNull.Value);
+                //        continue;
+                //    }
+
+                if(value == null)
+                    command.Parameters.AddWithValue("@" + fieldName, DBNull.Value);
+                else
                 command.Parameters.AddWithValue("@" + fieldName, value);
             }
             return command;
