@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 
@@ -10,7 +9,7 @@ namespace SlimOrm
     /// <summary>
     /// Depreciated. Use Extension methods.
     /// </summary>
-   public partial class StaticMethods
+    public partial class StaticMethods
     {
 
 
@@ -132,7 +131,7 @@ namespace SlimOrm
     }
 }
 
-namespace SlimOrm.Extensions 
+namespace SlimOrm
 {
     public static class ExtensionMethods 
     {
@@ -516,7 +515,7 @@ namespace SlimOrm.Extensions
 }
 
 
-namespace SlimOrm 
+namespace SlimOrm
 {
     public static class BestDBGuess
     {

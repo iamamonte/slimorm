@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace SlimOrm.Attributes
+namespace SlimOrm
 {
     /// <summary>
     /// Used to indicate the field name in a database. Presumes underscore casing if nothing is provdied.
@@ -20,6 +20,15 @@ namespace SlimOrm.Attributes
             Value = "";
 
         }
+
+    }
+
+    /// <summary>
+    /// Used for nullable datetimes when you want to default to the database current timestamp
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class DateDefault : Attribute
+    {
 
     }
 

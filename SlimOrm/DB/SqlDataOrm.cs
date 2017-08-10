@@ -1,6 +1,4 @@
-﻿using SlimOrm.Attributes;
-using SlimOrm.DB;
-using SlimOrm.Extensions;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -38,7 +36,7 @@ namespace SlimOrm
         #endregion
 
         #region Private Methods
-        private static string CreateDeleteStatement(DataBase obj)
+        private static string CreateDeleteStatement(object obj)
         {
             StringBuilder sb = new StringBuilder();
             TableName tableName = obj.GetType().GetCustomAttribute<TableName>();
@@ -76,7 +74,7 @@ namespace SlimOrm
             return sb.ToString();
         }
 
-        private static string CreateUpdateStatement(DataBase obj)
+        private static string CreateUpdateStatement(object obj)
         {
             StringBuilder sb = new StringBuilder();
             TableName tableName = obj.GetType().GetCustomAttribute<TableName>();
@@ -119,7 +117,7 @@ namespace SlimOrm
             return sb.ToString();
         }
 
-        private static string CreateInsertStatement(DataBase obj)
+        private static string CreateInsertStatement(object obj)
         {
             StringBuilder sb = new StringBuilder();
             TableName tableName = obj.GetType().GetCustomAttribute<TableName>();
@@ -165,7 +163,7 @@ namespace SlimOrm
             return sb.ToString();
         }
 
-        private static string CreateSelectStatement(DataBase obj)
+        private static string CreateSelectStatement(object obj)
         {
             StringBuilder sb = new StringBuilder();
             TableName tableName = obj.GetType().GetCustomAttribute<TableName>();
@@ -207,7 +205,7 @@ namespace SlimOrm
         #endregion
 
         #region Public Methods
-        public T Create<T>(T obj) where T : DataBase
+        public T Create<T>(T obj) where T : class
         {
             using (SqlConnection conn = (SqlConnection)_dbConn.CreateConnection())
             {
@@ -222,25 +220,25 @@ namespace SlimOrm
             }
         }
 
-        public int Purge<T>(T obj) where T : DataBase
+        public int Purge<T>(T obj) where T : class
         {
             using (SqlConnection conn = (SqlConnection)_dbConn.CreateConnection())
             {
-                SqlCommand updateCommand = new SqlCommand(CreateDeleteStatement(obj), conn);
-                SqlDataAssigner.SetParametersFromDbNameProperties(obj, updateCommand);
+                SqlCommand deleteCommand = new SqlCommand(CreateDeleteStatement(obj), conn);
+                SqlDataAssigner.SetParametersFromDbNameProperties(obj, deleteCommand);
                 conn.Open();
-                return updateCommand.ExecuteNonQuery();
+                return deleteCommand.ExecuteNonQuery();
             }
         }
 
-        public T Retrive<T>(T obj) where T : DataBase
+        public T Retrive<T>(T obj) where T : class
         {
             using (SqlConnection conn = (SqlConnection)_dbConn.CreateConnection())
             {
-                SqlCommand updateCommand = new SqlCommand(CreateSelectStatement(obj), conn);
-                SqlDataAssigner.SetParametersFromDbNameProperties(obj, updateCommand);
+                SqlCommand selectCommand = new SqlCommand(CreateSelectStatement(obj), conn);
+                SqlDataAssigner.SetParametersFromDbNameProperties(obj, selectCommand);
                 conn.Open();
-                SqlDataReader reader = updateCommand.ExecuteReader();
+                SqlDataReader reader = selectCommand.ExecuteReader();
                 T retVal = null;
                 while (reader.Read())
                     retVal = Activator.CreateInstance(typeof(T), args: reader) as T;
@@ -248,7 +246,7 @@ namespace SlimOrm
             }
         }
 
-        public T Update<T>(T obj) where T : DataBase
+        public T Update<T>(T obj) where T : class
         {
             using (SqlConnection conn = (SqlConnection)_dbConn.CreateConnection())
             {
@@ -280,6 +278,18 @@ namespace SlimOrm
                 while (reader.Read())
                     retVal.Add(Activator.CreateInstance(typeof(T), args: reader) as T);
                 return retVal;
+            }
+        }
+
+        public int ExecuteQuery(string query, object paramObject)
+        {
+            using (SqlConnection conn = (SqlConnection)_dbConn.CreateConnection())
+            {
+                SqlCommand command = new SqlCommand(query, conn);
+                if (paramObject != null)
+                    SqlDataAssigner.SetParametersFromObject(paramObject, command);
+                conn.Open();
+                return command.ExecuteNonQuery();
             }
         }
         #endregion

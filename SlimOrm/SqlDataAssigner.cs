@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Data.SqlClient;
 using System.Data.Common;
+using System.IO;
 
 namespace SlimOrm
 {
@@ -197,14 +198,28 @@ namespace SlimOrm
             {
                 return;
             }
+            
+            //binary
+            if (field.PropertyType.FullName == "System.Byte[]")
+            {
+                field.SetValue(targetObject, (byte[])reader[dbName]);
+                return;
+            }
+
             if (!(field.PropertyType.IsClass && field.PropertyType != typeof(String)))
             {
                 if (field.Name.IndexOf("BackingField") >= 0) { return; }
+
+               
+
+                //boolean
                 if (field.PropertyType.FullName == "System.Boolean")
                 {
                     field.SetValue(targetObject, reader[dbName].ToString().ConvertToBool());
                     return;
                 }
+
+                //enum
                 if (field.PropertyType.BaseType == typeof(Enum))
                 {
                     int _value = (int)Convert.ChangeType(reader[dbName].ToString(), typeof(int));
@@ -214,23 +229,18 @@ namespace SlimOrm
                 }
                 else
                 {
-                    //  if (!string.IsNullOrEmpty(reader[field.Name].ToString()))
+                   //nullable
                     if (propertyType.Contains("nullable"))
-                    { //If no value is found on a nullable type.
+                    { 
+                        //If no value is found on a nullable type.
                         if (string.IsNullOrEmpty(reader[dbName].ToString()))
                             return;
 
                         field.SetValue(targetObject, Convert.ChangeType(reader[dbName].ToString(), Nullable.GetUnderlyingType(field.PropertyType)));
-                        //nullable int
-                        //if (propertyType.Contains("int"))
-                        //    field.SetValue(targetObject, Convert.ChangeType(Int64.Parse(reader[dbName].ToString()), field.PropertyType));
-
-                        //nullable long
-                        //if (propertyType.Contains("long"))
-                        //    field.SetValue(targetObject, (long?)long.Parse(reader[dbName].ToString()));
-
                         return;
                     }
+
+                    //all else
                     field.SetValue(targetObject, Convert.ChangeType(reader[dbName].ToString(), field.PropertyType));
                 }
             }
@@ -253,6 +263,9 @@ namespace SlimOrm
                 fieldName = (currentAttribute.Value == "") ? property.Name.ToUnderScoreCase() : currentAttribute.Value;
                 object value = property.GetValue(providingObject);
 
+                
+
+
                 //if (property.PropertyType.Name.ToLower().Contains("nullable"))
                 //    if (value == null)
                 //    {
@@ -260,10 +273,26 @@ namespace SlimOrm
                 //        continue;
                 //    }
 
-                if(value == null)
-                    command.Parameters.AddWithValue("@" + fieldName, DBNull.Value);
+                if (value == null)
+                {
+
+                    if (!property.PropertyType.FullName.Contains("DateTime"))
+                    {
+                        command.Parameters.AddWithValue("@" + fieldName, DBNull.Value);
+
+                    }
+                    else
+                    {
+                        object dateDefault = (object)property.GetCustomAttribute(typeof(DateDefault));
+
+                        //default of current time 
+                        if(dateDefault != null)
+                        command.Parameters.AddWithValue("@" + fieldName, DateTime.Now);
+                    }
+
+                }
                 else
-                command.Parameters.AddWithValue("@" + fieldName, value);
+                    command.Parameters.AddWithValue("@" + fieldName, value);
             }
             return command;
         }

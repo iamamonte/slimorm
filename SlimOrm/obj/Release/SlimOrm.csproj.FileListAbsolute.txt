@@ -1,0 +1,5 @@
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Release\SlimOrm.dll
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Release\SlimOrm.pdb
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Release\SlimOrm.dll
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Release\SlimOrm.pdb
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Release\SlimOrm.csprojResolveAssemblyReference.cache

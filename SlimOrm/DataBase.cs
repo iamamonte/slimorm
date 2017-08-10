@@ -2,6 +2,7 @@
 
 namespace SlimOrm
 {
+    
     public class DataBase
     {
         public DataBase() { }

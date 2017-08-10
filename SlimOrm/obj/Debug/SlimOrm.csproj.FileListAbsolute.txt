@@ -1,0 +1,9 @@
+C:\CT GIT\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Debug\SlimOrm.dll
+C:\CT GIT\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Debug\SlimOrm.pdb
+C:\CT GIT\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Debug\SlimOrm.csprojResolveAssemblyReference.cache
+C:\CT GIT\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Debug\SlimOrm.dll
+C:\CT GIT\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Debug\SlimOrm.pdb
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Debug\SlimOrm.dll
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\bin\Debug\SlimOrm.pdb
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Debug\SlimOrm.dll
+C:\DM_Code\SBS\SlimOrm\SlimOrm\SlimOrm\obj\Debug\SlimOrm.pdb
